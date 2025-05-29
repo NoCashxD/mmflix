@@ -21,23 +21,27 @@ const MovieInfo = ({ info }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
     const [downloadLinks, setDownloadLinks] = useState<DownloadItem[]>([]);
 
-    useEffect(() => {
-        const fetchDownloadLinks = async () => {
-            try {
-                const res = await fetch(`/api/movies?title=${encodeURIComponent(info.title)}`);
-                if (res.ok) {
-                    const data = await res.json();
-                    setDownloadLinks(data);
-                } else {
-                    console.error('Failed to fetch download links');
-                }
-            } catch (err) {
-                console.error('Error fetching download links:', err);
+   useEffect(() => {
+    const fetchDownloadLinks = async () => {
+        console.log('Fetching movie:', info.title);
+        try {
+            const res = await fetch(`/api/movies?name=${encodeURIComponent(info.title)}`);
+            if (res.ok) {
+                const data = await res.json();
+                setDownloadLinks(data);
+            } else {
+                console.error('Failed to fetch download links, status:', res.status);
             }
-        };
+        } catch (err) {
+            console.error('Error fetching download links:', err);
+        }
+    };
 
+    if (info.title) {
         fetchDownloadLinks();
-    }, [info.title]);
+    }
+}, [info.title]);
+
 
     const otherDetails = [
         { label: 'Runtime', value: `${info?.runtime} min` },
