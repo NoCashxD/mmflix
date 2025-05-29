@@ -6,6 +6,7 @@ import { Heart } from 'lucide-react';
 import { useFavorites } from '@/context/favorites-context';
 import { cn } from '@/lib/utils';
 import ISO6391 from 'iso-639-1';
+import { log } from 'console';
 
 type Props = {
     info: IMovieInfo;
@@ -21,26 +22,39 @@ const MovieInfo = ({ info }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
     const [downloadLinks, setDownloadLinks] = useState<DownloadItem[]>([]);
 
-   useEffect(() => {
-    const fetchDownloadLinks = async () => {
-        console.log('Fetching movie:', info.title);
-        try {
-            const res = await fetch(`/api/movies?name=${encodeURIComponent(info.title)}`);
-            if (res.ok) {
-                const data = await res.json();
-                setDownloadLinks(data);
-            } else {
-                console.error('Failed to fetch download links, status:', res.status);
-            }
-        } catch (err) {
-            console.error('Error fetching download links:', err);
-        }
-    };
+  useEffect(() => {
+  const fetchDownloadLinks = async () => {
+    console.log('Fetching movie:', info.title);
+    try {
+      const res = await fetch(`/api/movies?name=${encodeURIComponent(info.title)}`);
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data);
 
-    if (info.title) {
-        fetchDownloadLinks();
+        if (data.length > 0) {
+          const movie = data[0];
+          const links = [
+            { quality: '360', link: movie.p360, size: 'N/A' },
+            { quality: '720', link: movie.p720, size: 'N/A' },
+            { quality: '1080', link: movie.p1080, size: 'N/A' },
+          ];
+          setDownloadLinks(links);
+        } else {
+          setDownloadLinks([]);
+        }
+      } else {
+        console.error('Failed to fetch download links, status:', res.status);
+      }
+    } catch (err) {
+      console.error('Error fetching download links:', err);
     }
+  };
+
+  if (info.title) {
+    fetchDownloadLinks();
+  }
 }, [info.title]);
+
 
 
     const otherDetails = [
