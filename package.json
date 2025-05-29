@@ -34,7 +34,9 @@
     "react-use": "^17.6.0",
     "slick-carousel": "^1.8.1",
     "tailwind-merge": "^3.0.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "mysql2": "^3.0.0",
+    "dotenv": "^16.0.0"
   },
   "devDependencies": {
     "@next/swc-wasm-nodejs": "^15.1.8",
