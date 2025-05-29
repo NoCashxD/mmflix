@@ -33,11 +33,12 @@ const MovieInfo = ({ info }: Props) => {
 
         if (data.length > 0) {
           const movie = data[0];
-          const links: DownloadItem[] = [
-  { quality: 360, link: movie.p360, size: 0 },
-  { quality: 720, link: movie.p720, size: 0 },
-  { quality: 1080, link: movie.p1080, size: 0 },
+         const links = [
+  { quality:360, link: movie.p360, size: movie.size_360 || 0 },
+  { quality:720, link: movie.p720, size: movie.size_720 || 0 },
+  { quality: 1080, link: movie.p1080, size: movie.size_1080 || 0 },
 ];
+
       setDownloadLinks(links);
         } else {
           setDownloadLinks([]);
