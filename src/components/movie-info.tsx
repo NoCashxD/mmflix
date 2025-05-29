@@ -15,16 +15,21 @@ const MovieInfo = ({ info }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
 
     const otherDetails = [
-        { label: 'Budget', value: `$${info?.budget}` },
-        { label: 'Revenue', value: `$${info?.revenue}` },
+        // { label: 'Budget', value: `$${info?.budget}` },
+        // { label: 'Revenue', value: `$${info?.revenue}` },
         { label: 'Runtime', value: `${info?.runtime} min` },
         { label: 'Release Date', value: `${info?.release_date}` },
-        { label: 'Status', value: `${info?.status}` },
+        // { label: 'Status', value: `${info?.status}` },
         { label: 'Original Language', value: `${ISO6391.getName(info?.original_language)}` },
         // { label: 'Original Title', value: `${info?.original_title}` },
         // { label: 'Popularity', value: `${info?.popularity}` },
-        { label: 'Vote Count', value: `${info?.vote_count}` },
-        { label: 'Vote Average', value: `${info?.vote_average}` },
+        // { label: 'Vote Count', value: `${info?.vote_count}` },
+        // { label: 'Vote Average', value: `${info?.vote_average}` },
+    ];
+    const DownloadDetails = [
+        { quality : 360,size : 300 },
+        { quality : 720,size : 600 },
+        { quality : 1080 ,size : 1000 }
     ];
 
     return (
@@ -82,6 +87,19 @@ const MovieInfo = ({ info }: Props) => {
                                     <h4 className="text-xs md:text-base capitalize">{item.label}</h4>
 
                                     <p className="text-primary font-semibold">{item.value}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="mt-auto">
+                        <h4 className="font-bold mb-2">Download</h4>
+
+                        <div className="grid grid-cols-2 gap-3">
+                            {DownloadDetails.map((item, index) => (
+                                <div className=" flex flex-col md:flex-row items-center justify-between rounded-md bg-black/60 py-2 px-4 border">
+                                    <h4 className="text-xs md:text-base capitalize">{item.quality}p</h4>
+
+                                    <p className="text-primary font-semibold hover:bg-red-600 hover:text-white">{item.size}mb</p>
                                 </div>
                             ))}
                         </div>
