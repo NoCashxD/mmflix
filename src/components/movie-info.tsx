@@ -24,7 +24,7 @@ const MovieInfo = ({ info }: Props) => {
     useEffect(() => {
         const fetchDownloadLinks = async () => {
             try {
-                const res = await fetch(`/api/download-links?title=${encodeURIComponent(info.title)}`);
+                const res = await fetch(`/api/movies?title=${encodeURIComponent(info.title)}`);
                 if (res.ok) {
                     const data = await res.json();
                     setDownloadLinks(data);
