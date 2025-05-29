@@ -20,7 +20,7 @@ export async function GET(request) {
   }
 
   try {
-    const [rows] = await pool.query('SELECT * FROM movies WHERE name = ?', [name]);
+    const [rows] = await pool.query('SELECT * FROM movies WHERE name LIKE ?', [`%${name}%`]);
 
     if (rows.length === 0) {
       return new Response(JSON.stringify({ message: 'Movie not found' }), {
