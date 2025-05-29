@@ -4,6 +4,8 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Pacifico&display=swap');
 
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -100,7 +102,7 @@
     body {
         @apply bg-background text-foreground;
         font-weight: 500;
-        font-family: 'Raleway', serif;
+        font-family: "Inconsolata", monospace;
     }
 
     p {
