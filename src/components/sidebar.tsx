@@ -32,13 +32,6 @@ const Sidebar = () => {
                         <span>{link.name}</span>
                     </Link>
                 ))}
-
-                <a href="https://github.com/devxprite/moviesprix/" target="_blank" className="mt-auto">
-                    <Button variant={'secondary'} className="w-full">
-                        <Github />
-                        View Source
-                    </Button>
-                </a>
             </div>
         </div>
     );
