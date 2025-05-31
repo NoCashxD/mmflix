@@ -5,31 +5,31 @@ import { Analytics } from '@vercel/analytics/react';
 
 export const metadata: Metadata = {
     title: {
-        default: 'MoviesPrix - Explore Movies',
-        template: '%s | MoviesPrix',
+        default: 'MovFlix - Explore Movies',
+        template: '%s | MovFlix',
     },
-    description: 'Discover movies, explore details, and find your next favorite film with MoviesPrix.',
+    description: 'Discover movies, explore details, and find your next favorite film with MovFlix.',
     keywords: ['movies', 'films', 'explore movies', 'movie database', 'movie ratings', 'movie trailers'],
-    authors: [{ name: 'Prateek Singh', url: 'https://github.com/devxprite/MoviesPrix' }],
-    metadataBase: new URL('https://moviesprix.vercel.app'),
+    authors: [{ name: 'Sandeep Singh', url: 'https://github.com/NoCashxD' }],
+    metadataBase: new URL('https://movflix.vercel.app'),
     openGraph: {
-        description: 'Discover movies, explore details, and find your next favorite film with MoviesPrix.',
-        url: 'https://moviesprix.vercel.app',
-        siteName: 'MoviesPrix',
+        description: 'Discover movies, explore details, and find your next favorite film with MovFlix.',
+        url: 'https://movflix.vercel.app',
+        siteName: 'MovFlix',
         images: [
             {
-                url: 'https://moviesprix.vercel.app/banner.png',
+                url: 'https://movflix.vercel.app/banner.png',
                 width: 1200,
                 height: 630,
-                alt: 'MoviesPrix Banner',
+                alt: 'MovFlix Banner',
             },
         ],
         type: 'website',
     },
     twitter: {
         card: 'summary_large_image',
-        description: 'Discover movies, explore details, and find your next favorite film with MoviesPrix.',
-        images: ['https://moviesprix.vercel.app/banner.png'],
+        description: 'Discover movies, explore details, and find your next favorite film with MovFlix.',
+        images: ['https://movflix.vercel.app/banner.png'],
     },
     manifest: '/site.webmanifest',
     robots: 'index, follow',
