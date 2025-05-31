@@ -27,10 +27,6 @@
 
 ---
 
-## 📂 Project Structure
-
----
-
 ## ✅ Future Plans
 
 - [ ] Add genre filters and sorting
@@ -38,8 +34,6 @@
 - [ ] Add user login (optional)
 - [ ] TMDB/OMDb API integration
 - [ ] Add subtitles support
-
----
 
 ## 📄 License
 
