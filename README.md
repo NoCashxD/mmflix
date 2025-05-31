@@ -2,8 +2,6 @@
 
 **MFLIX** is a modern, private movie streaming platform built with **React**. It offers a smooth, cinematic experience with beautiful design and powerful features for watching and downloading movies.
 
-![MFLIX Banner](https://yourdomain.com/banner.png) <!-- Replace with your image -->
-
 ---
 
 ## 🌟 Features
@@ -31,15 +29,6 @@
 
 ## 📂 Project Structure
 
-
----
-
-## 📸 Screenshots
-
-| Homepage                     | Movie Page                    |
-|-----------------------------|-------------------------------|
-| ![](https://yourdomain.com/home.png) | ![](https://yourdomain.com/movie.png) |
-
 ---
 
 ## ✅ Future Plans
@@ -57,10 +46,3 @@
 This project is **private** and not licensed for public distribution.
 
 ---
-
-## 👤 Author
-
-**MFLIX** by [Your Name]  
-📧 youremail@example.com  
-🌐 [yourwebsite.com](https://yourwebsite.com)  
-🔗 GitHub: [@yourusername](https://github.com/yourusername)
