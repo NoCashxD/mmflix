@@ -13,7 +13,7 @@ const Sidebar = () => {
         <div className="w-72 max-md:hidden flex flex-col h-screen bg-card border-r ">
             <div className="p-2 px-6 border-b">
                 <h2 className="font-semibold text-center">
-                    <span className="text-gradient text-xl">MoviesPrix</span>
+                    <span className="text-gradient text-xl">MovFlix</span>
                 </h2>
             </div>
 
