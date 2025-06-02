@@ -14,10 +14,7 @@ interface DiscoverMoviesProps {
 
 const getAllowedMovieNames = async (): Promise<string[]> => {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_SITE_URL || // custom domain for production
-      process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}` || // fallback for Vercel
-      'http://localhost:3000'; // fallback for local dev
+    const baseUrl = "https://mmflix.vercel.app"
 
     const response = await fetch(`${baseUrl}/api/allowed-movies`);
     const data = await response.json();
