@@ -1,7 +1,7 @@
 {
-    "name": "MoviesPrix",
-    "short_name": "MoviesPrix",
-    "description": "Discover movies, explore details, and find your next favorite film with MoviesPrix.",
+    "name": "MovFlix.in",
+    "short_name": "MovFlix.in",
+    "description": "Discover movies, explore details, and find your next favorite film with MovFlix.",
     "theme_color": "red",
     "background_color": "#121212",
     "display": "standalone",
