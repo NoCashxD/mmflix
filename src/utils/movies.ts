@@ -14,8 +14,7 @@ interface DiscoverMoviesProps {
 
 const getAllowedMovieNames = async (): Promise<string[]> => {
   try {
-    const baseUrl = "https://mmflix.vercel.app"
-
+    const baseUrl = "https://mmflix.vercel.app";
     const response = await fetch(`${baseUrl}/api/allowed-movies`);
     const data = await response.json();
     return data.map((name: string) => name.toLowerCase());
@@ -25,6 +24,12 @@ const getAllowedMovieNames = async (): Promise<string[]> => {
   }
 };
 
+const isAllowedMovie = (title: string, allowedNames: string[]): boolean => {
+  const lowerTitle = title.toLowerCase();
+  return allowedNames.some(name =>
+    lowerTitle.includes(name) || name.includes(lowerTitle)
+  );
+};
 
 export const discoverMovies = async (props: DiscoverMoviesProps) => {
   try {
@@ -44,9 +49,7 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
       },
     });
 
-    return response.data.results.filter(movie =>
-      allowedNames.includes(movie.title.toLowerCase())
-    );
+    return response.data.results.filter(movie => isAllowedMovie(movie.title, allowedNames));
   } catch (error) {
     console.log('Error while fetching movies inside Discover Movies:', error);
     return [];
@@ -58,9 +61,7 @@ export const getTrendingMovies = async () => {
     const allowedNames = await getAllowedMovieNames();
 
     const response = await tmdbClient.get<IApiResponse<IMovie[]>>('/trending/movie/week');
-    return response.data.results.filter(movie =>
-      allowedNames.includes(movie.title.toLowerCase())
-    );
+    return response.data.results.filter(movie => isAllowedMovie(movie.title, allowedNames));
   } catch (error) {
     console.log('Error while fetching movies inside Trending Movies:', error);
     return [];
@@ -88,9 +89,7 @@ export const searchMovies = async ({ query, type = 'movie', page = 1, signal }: 
       },
     });
 
-    return response.data.results.filter(movie =>
-      allowedNames.includes(movie.title.toLowerCase())
-    );
+    return response.data.results.filter(movie => isAllowedMovie(movie.title, allowedNames));
   } catch (error) {
     console.log('Error while fetching movies inside Search Movies:', error);
     return [];
@@ -104,9 +103,9 @@ export const getMovieInfo = async (id: string) => {
     });
 
     const allowedNames = await getAllowedMovieNames();
-    const movieTitle = movieData.data.title.toLowerCase();
+    const movieTitle = movieData.data.title;
 
-    if (!allowedNames.includes(movieTitle)) {
+    if (!isAllowedMovie(movieTitle, allowedNames)) {
       return null;
     }
 
@@ -121,12 +120,10 @@ export const getMovieInfo = async (id: string) => {
     return {
       ...movieData.data,
       cast: castData.data.cast,
-      similarMovies: similarMovies.data.results.filter(sim =>
-        allowedNames.includes(sim.title.toLowerCase())
-      ),
+      similarMovies: similarMovies.data.results.filter(sim => isAllowedMovie(sim.title, allowedNames)),
     };
   } catch (error) {
     console.log('Error while fetching movie info:', error);
     return null;
   }
-}; 
+};
