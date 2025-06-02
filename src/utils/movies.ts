@@ -14,7 +14,12 @@ interface DiscoverMoviesProps {
 
 const getAllowedMovieNames = async (): Promise<string[]> => {
   try {
-    const response = await fetch('/api/allowed-movies');
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || // custom domain for production
+      process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}` || // fallback for Vercel
+      'http://localhost:3000'; // fallback for local dev
+
+    const response = await fetch(`${baseUrl}/api/allowed-movies`);
     const data = await response.json();
     return data.map((name: string) => name.toLowerCase());
   } catch (error) {
@@ -22,6 +27,7 @@ const getAllowedMovieNames = async (): Promise<string[]> => {
     return [];
   }
 };
+
 
 export const discoverMovies = async (props: DiscoverMoviesProps) => {
   try {
@@ -126,4 +132,4 @@ export const getMovieInfo = async (id: string) => {
     console.log('Error while fetching movie info:', error);
     return null;
   }
-};
+}; 
