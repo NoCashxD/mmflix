@@ -52,7 +52,10 @@ const SearchResults = () => {
                     </CardHeader>
                     <CardContent className="grid gap-1 md:grid-cols-2">
                         {!loading &&
-                            results.map(movie => (
+                            results.map(movie =>{
+                                const title = movie.title || movie.name;
+                             return(
+                                
                                 <Link
                                     prefetch={false}
                                     href={`/browse/${movie.id}`}
@@ -72,7 +75,7 @@ const SearchResults = () => {
                                         </p>
                                     </div>
                                 </Link>
-                            ))}
+                            )})}
 
                         {loading && (
                             <p className="text-center col-span-2 items-center place-items-center text-muted-foreground py-10">

@@ -21,7 +21,7 @@ type DownloadItem = {
 const MovieInfo = ({ info }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
     const [downloadLinks, setDownloadLinks] = useState<DownloadItem[]>([]);
-
+    const title = info?.title || info?.original_name;
   useEffect(() => {
   const fetchDownloadLinks = async () => {
     console.log('Fetching movie:', info.title);
@@ -88,7 +88,7 @@ const MovieInfo = ({ info }: Props) => {
 
                 <div className="flex flex-col gap-5">
                     <div>
-                        <h2 className="text-2xl md:text-4xl font-bold">{info?.title}</h2>
+                        <h2 className="text-2xl md:text-4xl font-bold">{title}</h2>
                         <h4 className="md:text-lg mt-1 text-foreground/95">{info?.tagline}</h4>
                         <RatingCompComponent className="mt-1" rating={info?.vote_average} starDimension={24} />
                     </div>

@@ -9,6 +9,7 @@ import Link from 'next/link';
 import React from 'react';
 import { useLocalStorage } from 'react-use';
 import Image from './client/image';
+import { title } from 'process';
 
 type Props = {
     movie: IMovie;
@@ -17,7 +18,7 @@ type Props = {
 
 const MovieCard = ({ movie, className }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
-
+    const title = movie.title || movie.name;
     return (
         <Link href={`/browse/${movie.id}`} className="inline-block whitespace-normal" prefetch={false}>
             <div
@@ -54,7 +55,7 @@ const MovieCard = ({ movie, className }: Props) => {
                 <div className=" h-full z-10 relative flex items-end">
                     <div className="p-2 pt-12 bg-gradient-to-b from-black/0 via-black/80 to-black w-full">
                         <h3 className="text-xs md:text-sm font-semibold text-ellipsis line-clamp-1 overflow-hidden group-hover:text-primary transition-all">
-                            {movie.title}
+                            {title}
                         </h3>
                         <p className="text-[10px] md:text-xs text-foreground/80 h-0 overflow-hidden group-hover:h-[8lh] line-clamp-[8] transition-all">
                             {movie.overview}
