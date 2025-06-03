@@ -64,7 +64,7 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
     ]);
 
     const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
-    return allResults.filter(item => isAllowedMovie(item.original_title, allowedNames));
+    return allResults
   } catch (error) {
     console.log('Error while fetching combined movie/TV results:', error);
     return [];
