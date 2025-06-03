@@ -67,12 +67,12 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
 
     const movieResults = movieResponse.data.results.map(item => ({
       ...item,
-      media_type: 'movie',
+      media_type: 'movie',    // added here
     }));
 
     const tvResults = tvResponse.data.results.map(item => ({
       ...item,
-      media_type: 'tv',
+      media_type: 'tv',       // added here
     }));
 
     const allResults = [...movieResults, ...tvResults];
@@ -96,7 +96,17 @@ export const getTrendingMovies = async () => {
       tmdbClient.get<IApiResponse<IMovie[]>>('/trending/tv/week'),
     ]);
 
-    const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
+    const movieResults = movieResponse.data.results.map(item => ({
+      ...item,
+      media_type: 'movie',  // added here
+    }));
+
+    const tvResults = tvResponse.data.results.map(item => ({
+      ...item,
+      media_type: 'tv',     // added here
+    }));
+
+    const allResults = [...movieResults, ...tvResults];
     return allResults.filter(item => {
       const title = item.original_title || item.name;
       return isAllowedMovie(title, allowedNames);
@@ -137,7 +147,17 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
       }),
     ]);
 
-    const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
+    const movieResults = movieResponse.data.results.map(item => ({
+      ...item,
+      media_type: 'movie',  // added here
+    }));
+
+    const tvResults = tvResponse.data.results.map(item => ({
+      ...item,
+      media_type: 'tv',     // added here
+    }));
+
+    const allResults = [...movieResults, ...tvResults];
     return allResults.filter(item => {
       const title = item.original_title || item.name;
       return isAllowedMovie(title, allowedNames);
