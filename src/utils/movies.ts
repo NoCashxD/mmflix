@@ -25,10 +25,12 @@ const getAllowedMovieNames = async (): Promise<string[]> => {
 };
 
 const isAllowedMovie = (title: string, allowedNames: string[]): boolean => {
+  if (!title) return false;
   const lowerTitle = title.toLowerCase();
-  return allowedNames.some(name =>
-    lowerTitle.includes(name) || name.includes(lowerTitle)
-  );
+  return allowedNames.some(name => {
+    const lowerName = name.toLowerCase();
+    return lowerTitle.includes(lowerName) || lowerName.includes(lowerTitle);
+  });
 };
 
 export const discoverMovies = async (props: DiscoverMoviesProps) => {
@@ -74,9 +76,10 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
     }));
 
     const allResults = [...movieResults, ...tvResults];
-    return allResults.filter(item =>{
+    return allResults.filter(item => {
       const title = item.original_title || item.name;
-       isAllowedMovie(title, allowedNames)});
+      return isAllowedMovie(title, allowedNames);
+    });
   } catch (error) {
     console.log('Error while fetching combined movie/TV results:', error);
     return [];
@@ -94,9 +97,10 @@ export const getTrendingMovies = async () => {
     ]);
 
     const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
-    return allResults.filter(item =>{
+    return allResults.filter(item => {
       const title = item.original_title || item.name;
-       isAllowedMovie(title, allowedNames)});
+      return isAllowedMovie(title, allowedNames);
+    });
   } catch (error) {
     console.log('Error while fetching trending movies/TV:', error);
     return [];
@@ -134,9 +138,10 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
     ]);
 
     const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
-    return allResults.filter(item =>{
+    return allResults.filter(item => {
       const title = item.original_title || item.name;
-       isAllowedMovie(title, allowedNames)});
+      return isAllowedMovie(title, allowedNames);
+    });
   } catch (error) {
     console.log('Error while fetching search results:', error);
     return [];
@@ -184,4 +189,3 @@ export const getMovieInfo = async (id: string, media_type: string) => {
     return null;
   }
 };
-
