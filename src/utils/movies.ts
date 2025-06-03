@@ -119,7 +119,7 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
     ]);
 
     const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
-    return allResults.filter(item => isAllowedMovie(item.original_title, allowedNames));
+    return allResults;
   } catch (error) {
     console.log('Error while fetching search results:', error);
     return [];
