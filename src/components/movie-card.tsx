@@ -19,6 +19,8 @@ type Props = {
 const MovieCard = ({ movie, className }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
     const title = movie.title || movie.name;
+    const releaseDate = movie.release_date || movie.first_air_date;
+    const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : 'N/A';
     return (
         <Link href={`/browse/${movie.id}`} className="inline-block whitespace-normal" prefetch={false}>
             <div
@@ -61,7 +63,7 @@ const MovieCard = ({ movie, className }: Props) => {
                             {movie.overview}
                         </p>
                         <p className="text-[10px] md:text-xs text-muted-foreground group-hover:h-0 overflow-hidden transition-all">
-                            {movie.release_date} | {movie.original_language}{' '}
+                            {releaseYear} | {movie.original_language}{' '}
                         </p>
                     </div>
                 </div>

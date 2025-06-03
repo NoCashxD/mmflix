@@ -137,46 +137,46 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
   }
 };
 
-export const getMovieInfo = async (id: string) => {
+export const getMovieInfo = async (id: string, media_type: string) => {
   const allowedNames = await getAllowedMovieNames();
 
-  const fetchInfo = async (type: 'movie' | 'tv') => {
-    try {
-      const mainData = await tmdbClient.get<IMovieInfo>(`/${type}/${id}`, {
+  try {
+    const mainData = await tmdbClient.get<IMovieInfo>(`/${media_type}/${id}`, {
+      params: { language: 'en-US' },
+    });
+
+    const title =
+      mainData.data.title ||
+      mainData.data.original_title ||
+      mainData.data.name ||
+      mainData.data.original_name;
+
+    // Uncomment this if you want to restrict based on allowed titles
+    // if (!isAllowedMovie(title, allowedNames)) return null;
+
+    const [similarResponse, castResponse] = await Promise.all([
+      tmdbClient.get<IApiResponse<IMovie[]>>(`/${media_type}/${id}/similar`, {
         params: { language: 'en-US' },
-      });
+      }),
+      tmdbClient.get<{ cast: ICast[] }>(`/${media_type}/${id}/credits`, {
+        params: { language: 'en-US' },
+      }),
+    ]);
 
-      const title = mainData.data.title || mainData.data.original_title || mainData.data.name || mainData.data.original_name;
-
-      //if (!isAllowedMovie(title, allowedNames)) return null;
-
-      const [similarResponse, castResponse] = await Promise.all([
-        tmdbClient.get<IApiResponse<IMovie[]>>(`/${type}/${id}/similar`, {
-          params: { language: 'en-US' },
-        }),
-        tmdbClient.get<{ cast: ICast[] }>(`/${type}/${id}/credits`, {
-          params: { language: 'en-US' },
-        }),
-      ]);
-
-      return {
-        ...mainData.data,
-        type,
-        cast: castResponse.data.cast,
-        similarMovies: similarResponse.data.results.filter(sim =>
-          isAllowedMovie(sim.title || sim.original_title || sim.name || sim.original_name, allowedNames)
-        ),
-      };
-    } catch (err) {
-      return null;
-    }
-  };
-
-  // Try movie first, then TV
-  const movieInfo = await fetchInfo('movie');
-  if (movieInfo) return movieInfo;
-
-  const tvInfo = await fetchInfo('tv');
-  return tvInfo;
+    return {
+      ...mainData.data,
+      media_type,
+      cast: castResponse.data.cast,
+      similarMovies: similarResponse.data.results.filter(sim =>
+        isAllowedMovie(
+          sim.title || sim.original_title || sim.name || sim.original_name,
+          allowedNames
+        )
+      ),
+    };
+  } catch (err) {
+    return null;
+  }
 };
+
 
