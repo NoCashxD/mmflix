@@ -21,7 +21,7 @@ type DownloadItem = {
 const MovieInfo = ({ info }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
     const [downloadLinks, setDownloadLinks] = useState<DownloadItem[]>([]);
-    const title = info?.title || info?.original_name;
+    const title = info?.title || info?.name;
   useEffect(() => {
   const fetchDownloadLinks = async () => {
     console.log('Fetching movie:', info.title);
