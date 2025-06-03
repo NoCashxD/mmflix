@@ -126,39 +126,46 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
   }
 };
 
-export const getMovieInfo = async (id: string, type: 'movie' | 'tv' = 'movie') => {
-  try {
-    const [mainData, allowedNames] = await Promise.all([
-      tmdbClient.get<IMovieInfo>(`/${type}/${id}`, {
+export const getMovieInfo = async (id: string) => {
+  const allowedNames = await getAllowedMovieNames();
+
+  const fetchInfo = async (type: 'movie' | 'tv') => {
+    try {
+      const mainData = await tmdbClient.get<IMovieInfo>(`/${type}/${id}`, {
         params: { language: 'en-US' },
-      }),
-      getAllowedMovieNames(),
-    ]);
+      });
 
-    const title = mainData.data.title || mainData.data.original_title;
+      const title = mainData.data.title || mainData.data.original_title || mainData.data.name || mainData.data.original_name;
 
-    if (!isAllowedMovie(title, allowedNames)) {
+      if (!isAllowedMovie(title, allowedNames)) return null;
+
+      const [similarResponse, castResponse] = await Promise.all([
+        tmdbClient.get<IApiResponse<IMovie[]>>(`/${type}/${id}/similar`, {
+          params: { language: 'en-US' },
+        }),
+        tmdbClient.get<{ cast: ICast[] }>(`/${type}/${id}/credits`, {
+          params: { language: 'en-US' },
+        }),
+      ]);
+
+      return {
+        ...mainData.data,
+        type,
+        cast: castResponse.data.cast,
+        similarMovies: similarResponse.data.results.filter(sim =>
+          isAllowedMovie(sim.title || sim.original_title || sim.name || sim.original_name, allowedNames)
+        ),
+      };
+    } catch (err) {
       return null;
     }
+  };
 
-    const [similarResponse, castResponse] = await Promise.all([
-      tmdbClient.get<IApiResponse<IMovie[]>>(`/${type}/${id}/similar`, {
-        params: { language: 'en-US' },
-      }),
-      tmdbClient.get<{ cast: ICast[] }>(`/${type}/${id}/credits`, {
-        params: { language: 'en-US' },
-      }),
-    ]);
+  // Try movie first, then TV
+  const movieInfo = await fetchInfo('movie');
+  if (movieInfo) return movieInfo;
 
-    return {
-      ...mainData.data,
-      cast: castResponse.data.cast,
-      similarMovies: similarResponse.data.results.filter(sim =>
-        isAllowedMovie(sim.title || sim.original_title, allowedNames)
-      ),
-    };
-  } catch (error) {
-    console.log('Error while fetching movie/TV info:', error);
-    return null;
-  }
+  const tvInfo = await fetchInfo('tv');
+  return tvInfo;
 };
+
