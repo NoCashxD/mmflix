@@ -63,13 +63,24 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
       }),
     ]);
 
-    const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
-    return allResults
+    const movieResults = movieResponse.data.results.map(item => ({
+      ...item,
+      media_type: 'movie',
+    }));
+
+    const tvResults = tvResponse.data.results.map(item => ({
+      ...item,
+      media_type: 'tv',
+    }));
+
+    const allResults = [...movieResults, ...tvResults];
+    return allResults;
   } catch (error) {
     console.log('Error while fetching combined movie/TV results:', error);
     return [];
   }
 };
+
 
 export const getTrendingMovies = async () => {
   try {
@@ -137,7 +148,7 @@ export const getMovieInfo = async (id: string) => {
 
       const title = mainData.data.title || mainData.data.original_title || mainData.data.name || mainData.data.original_name;
 
-      if (!isAllowedMovie(title, allowedNames)) return null;
+      //if (!isAllowedMovie(title, allowedNames)) return null;
 
       const [similarResponse, castResponse] = await Promise.all([
         tmdbClient.get<IApiResponse<IMovie[]>>(`/${type}/${id}/similar`, {

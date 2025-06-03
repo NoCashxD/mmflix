@@ -52,30 +52,42 @@ const SearchResults = () => {
                     </CardHeader>
                     <CardContent className="grid gap-1 md:grid-cols-2">
                         {!loading &&
-                            results.map(movie =>{
-                                const title = movie.title || movie.name;
-                             return(
-                                
-                                <Link
-                                    prefetch={false}
-                                    href={`/browse/${movie.id}`}
-                                    key={movie.id}
-                                    className="py-1.5 px-2 rounded-md gap-3 flex hover:bg-muted cursor-pointer group transition-all"
-                                >
-                                    <img
-                                        className="border rounded-md size-10 overflow-hidden"
-                                        src={`https://image.tmdb.org/t/p/w500${movie?.poster_path}`}
-                                    />
+                           results.map(movie => {
+  const title =
+    movie.title || movie.name || movie.original_title || movie.original_name || 'Untitled';
 
-                                    <div className="flex-1">
-                                        <h3 className={'line-clamp-1 text-ellipsis'}>{movie.title}</h3>
+  const releaseDate = movie.release_date || movie.first_air_date;
+  const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : 'N/A';
 
-                                        <p className="text-xs text-muted-foreground">
-                                            {movie.original_language} -{new Date(movie.release_date).getFullYear()}
-                                        </p>
-                                    </div>
-                                </Link>
-                            )})}
+  const imageUrl = movie.poster_path
+    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+    : '/placeholder.png'; // Use a fallback image in your public folder
+
+  return (
+    <Link
+      prefetch={false}
+      href={`/browse/${movie.id}?type=${movie.media_type || 'movie'}`}
+      key={`${movie.media_type || 'movie'}-${movie.id}`}
+      className="py-1.5 px-2 rounded-md gap-3 flex hover:bg-muted cursor-pointer group transition-all"
+    >
+      <img
+        className="border rounded-md size-10 object-cover"
+        src={imageUrl}
+        alt={title}
+        loading="lazy"
+      />
+
+      <div className="flex-1">
+        <h3 className="line-clamp-1 text-ellipsis font-medium">{title}</h3>
+        <p className="text-xs text-muted-foreground capitalize">
+          {movie.original_language} - {releaseYear}
+        </p>
+      </div>
+    </Link>
+  );
+})
+};
+
 
                         {loading && (
                             <p className="text-center col-span-2 items-center place-items-center text-muted-foreground py-10">

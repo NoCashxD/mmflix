@@ -17,11 +17,14 @@ export interface IMovie {
     popularity: number;
     poster_path: string;
     release_date: string;
+    first_air_date: string;
     title: string;
     name: string;
     video: boolean;
     vote_average: number;
     vote_count: number;
+    media_type: string;
+
 }
 
 export interface IMovieInfo {
@@ -43,6 +46,7 @@ export interface IMovieInfo {
     production_companies: ProductionCompany[];
     production_countries: ProductionCountry[];
     release_date: Date;
+    first_air_date: string;
     revenue: number;
     runtime: number;
     spoken_languages: SpokenLanguage[];
