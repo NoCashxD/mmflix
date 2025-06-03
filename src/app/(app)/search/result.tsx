@@ -25,8 +25,10 @@ const SearchResults = () => {
             const { data } = await axios.get('/search/api', { signal, params: { query } });
             setResults(data);
             setLoading(false);
+            console.log(data);
         })();
-
+        
+        
         return () => controller.abort();
     }, [query]);
 
@@ -53,7 +55,7 @@ const SearchResults = () => {
                             results.map(movie => (
                                 <Link
                                     prefetch={false}
-                                    href={`/movies/${movie.id}`}
+                                    href={`/browse/${movie.id}`}
                                     key={movie.id}
                                     className="py-1.5 px-2 rounded-md gap-3 flex hover:bg-muted cursor-pointer group transition-all"
                                 >

@@ -19,7 +19,7 @@ const MovieCard = ({ movie, className }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
 
     return (
-        <Link href={`/movies/${movie.id}`} className="inline-block whitespace-normal" prefetch={false}>
+        <Link href={`/browse/${movie.id}`} className="inline-block whitespace-normal" prefetch={false}>
             <div
                 className={cn(
                     'rounded-lg overflow-hidden border relative h-44 md:h-52 2xl:h-56 aspect-[3/4] md:aspect-[3/4] shadow-md hover:border-primary transition-all duration-300 group',
