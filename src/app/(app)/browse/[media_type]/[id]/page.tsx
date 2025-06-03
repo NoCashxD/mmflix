@@ -10,7 +10,7 @@ import React from 'react';
 
 interface Props {
   params: {
-    media_type: 'movie' | 'tv';
+    media_type: string;
     id: string;
   };
 }
