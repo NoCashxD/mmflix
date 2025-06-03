@@ -74,7 +74,9 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
     }));
 
     const allResults = [...movieResults, ...tvResults];
-    return allResults;
+    return allResults.filter(item =>{
+      const title = item.original_title || item.name;
+       isAllowedMovie(item.title, allowedNames)});
   } catch (error) {
     console.log('Error while fetching combined movie/TV results:', error);
     return [];
@@ -92,7 +94,9 @@ export const getTrendingMovies = async () => {
     ]);
 
     const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
-    return allResults.filter(item => isAllowedMovie(item.original_title, allowedNames));
+    return allResults.filter(item =>{
+      const title = item.original_title || item.name;
+       isAllowedMovie(item.title, allowedNames)});
   } catch (error) {
     console.log('Error while fetching trending movies/TV:', error);
     return [];
@@ -130,7 +134,9 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
     ]);
 
     const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
-    return allResults;
+    return allResults.filter(item =>{
+      const title = item.original_title || item.name;
+       isAllowedMovie(item.title, allowedNames)});
   } catch (error) {
     console.log('Error while fetching search results:', error);
     return [];
@@ -178,5 +184,4 @@ export const getMovieInfo = async (id: string, media_type: string) => {
     return null;
   }
 };
-
 
