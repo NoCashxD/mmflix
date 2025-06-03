@@ -22,6 +22,8 @@ const MovieInfo = ({ info }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
     const [downloadLinks, setDownloadLinks] = useState<DownloadItem[]>([]);
     const title = info?.title || info?.name;
+    const releaseDate = info?.release_date || info?.first_air_date;
+    const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : 'N/A';
   useEffect(() => {
   const fetchDownloadLinks = async () => {
     console.log('Fetching movie:', info.title);
@@ -59,8 +61,8 @@ const MovieInfo = ({ info }: Props) => {
 
 
     const otherDetails = [
-        { label: 'Runtime', value: `${info?.runtime} min` },
-        { label: 'Release Date', value: `${info?.release_date}` },
+        info?.release_date && { label: 'Runtime', value: `${info?.runtime} min` },
+       info?.release_date && {  label: 'Release Date', value: `${info?.release_date}` },
         { label: 'Original Language', value: `${ISO6391.getName(info?.original_language)}` },
     ];
 
