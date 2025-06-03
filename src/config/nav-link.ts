@@ -12,8 +12,8 @@ const NavLinks = [
         icons: Search,
     },
     {
-        name: 'Movies',
-        href: '/movies',
+        name: 'Browse',
+        href: '/browse',
         icons: TvIcon,
     },
     {

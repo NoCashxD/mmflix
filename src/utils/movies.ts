@@ -35,23 +35,38 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
   try {
     const allowedNames = await getAllowedMovieNames();
 
-    const response = await tmdbClient.get<IApiResponse<IMovie[]>>('/discover/movie', {
-      params: {
-        page: props.page || 1,
-        include_adult: false,
-        include_video: false,
-        ...(props.sort_by && { sort_by: props.sort_by }),
-        ...(props.with_original_language && { with_original_language: props.with_original_language }),
-        ...(props.primary_release_year && { primary_release_year: props.primary_release_year }),
-        ...(props.with_genres && { with_genres: props.with_genres }),
-        ...(props.with_cast && { with_cast: props.with_cast }),
-        ...(props.with_people && { with_people: props.with_people }),
-      },
-    });
+    const [movieResponse, tvResponse] = await Promise.all([
+      tmdbClient.get<IApiResponse<IMovie[]>>('/discover/movie', {
+        params: {
+          page: props.page || 1,
+          include_adult: false,
+          include_video: false,
+          ...(props.sort_by && { sort_by: props.sort_by }),
+          ...(props.with_original_language && { with_original_language: props.with_original_language }),
+          ...(props.primary_release_year && { primary_release_year: props.primary_release_year }),
+          ...(props.with_genres && { with_genres: props.with_genres }),
+          ...(props.with_cast && { with_cast: props.with_cast }),
+          ...(props.with_people && { with_people: props.with_people }),
+        },
+      }),
+      tmdbClient.get<IApiResponse<IMovie[]>>('/discover/tv', {
+        params: {
+          page: props.page || 1,
+          include_adult: false,
+          ...(props.sort_by && { sort_by: props.sort_by }),
+          ...(props.with_original_language && { with_original_language: props.with_original_language }),
+          ...(props.primary_release_year && { first_air_date_year: props.primary_release_year }),
+          ...(props.with_genres && { with_genres: props.with_genres }),
+          ...(props.with_cast && { with_cast: props.with_cast }),
+          ...(props.with_people && { with_people: props.with_people }),
+        },
+      }),
+    ]);
 
-    return response.data.results.filter(movie => isAllowedMovie(movie.title, allowedNames));
+    const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
+    return allResults.filter(item => isAllowedMovie(item.original_title, allowedNames));
   } catch (error) {
-    console.log('Error while fetching movies inside Discover Movies:', error);
+    console.log('Error while fetching combined movie/TV results:', error);
     return [];
   }
 };
@@ -60,10 +75,15 @@ export const getTrendingMovies = async () => {
   try {
     const allowedNames = await getAllowedMovieNames();
 
-    const response = await tmdbClient.get<IApiResponse<IMovie[]>>('/trending/movie/week');
-    return response.data.results.filter(movie => isAllowedMovie(movie.title, allowedNames));
+    const [movieResponse, tvResponse] = await Promise.all([
+      tmdbClient.get<IApiResponse<IMovie[]>>('/trending/movie/week'),
+      tmdbClient.get<IApiResponse<IMovie[]>>('/trending/tv/week'),
+    ]);
+
+    const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
+    return allResults.filter(item => isAllowedMovie(item.original_title, allowedNames));
   } catch (error) {
-    console.log('Error while fetching movies inside Trending Movies:', error);
+    console.log('Error while fetching trending movies/TV:', error);
     return [];
   }
 };
@@ -75,55 +95,70 @@ interface SearchMoviesProps {
   signal?: AbortSignal | GenericAbortSignal;
 }
 
-export const searchMovies = async ({ query, type = 'movie', page = 1, signal }: SearchMoviesProps) => {
+export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProps) => {
   try {
     const allowedNames = await getAllowedMovieNames();
 
-    const response = await tmdbClient.get<IApiResponse<IMovie[]>>(`/search/${type}`, {
-      signal,
-      params: {
-        query,
-        include_adult: false,
-        include_video: false,
-        page,
-      },
-    });
+    const [movieResponse, tvResponse] = await Promise.all([
+      tmdbClient.get<IApiResponse<IMovie[]>>(`/search/movie`, {
+        signal,
+        params: {
+          query,
+          include_adult: false,
+          page,
+        },
+      }),
+      tmdbClient.get<IApiResponse<IMovie[]>>(`/search/tv`, {
+        signal,
+        params: {
+          query,
+          include_adult: false,
+          page,
+        },
+      }),
+    ]);
 
-    return response.data.results.filter(movie => isAllowedMovie(movie.title, allowedNames));
+    const allResults = [...movieResponse.data.results, ...tvResponse.data.results];
+    return allResults.filter(item => isAllowedMovie(item.original_title, allowedNames));
   } catch (error) {
-    console.log('Error while fetching movies inside Search Movies:', error);
+    console.log('Error while fetching search results:', error);
     return [];
   }
 };
 
-export const getMovieInfo = async (id: string) => {
+export const getMovieInfo = async (id: string, type: 'movie' | 'tv' = 'movie') => {
   try {
-    const movieData = await tmdbClient.get<IMovieInfo>(`/movie/${id}`, {
-      params: { language: 'en-US' },
-    });
+    const [mainData, allowedNames] = await Promise.all([
+      tmdbClient.get<IMovieInfo>(`/${type}/${id}`, {
+        params: { language: 'en-US' },
+      }),
+      getAllowedMovieNames(),
+    ]);
 
-    const allowedNames = await getAllowedMovieNames();
-    const movieTitle = movieData.data.title;
+    const title = mainData.data.title || mainData.data.original_title;
 
-    if (!isAllowedMovie(movieTitle, allowedNames)) {
+    if (!isAllowedMovie(title, allowedNames)) {
       return null;
     }
 
-    const similarMovies = await tmdbClient.get<IApiResponse<IMovie[]>>(`/movie/${id}/similar`, {
-      params: { language: 'en-US' },
-    });
-
-    const castData = await tmdbClient.get<{ cast: ICast[] }>(`/movie/${id}/credits`, {
-      params: { language: 'en-US' },
-    });
+    const [similarResponse, castResponse] = await Promise.all([
+      tmdbClient.get<IApiResponse<IMovie[]>>(`/${type}/${id}/similar`, {
+        params: { language: 'en-US' },
+      }),
+      tmdbClient.get<{ cast: ICast[] }>(`/${type}/${id}/credits`, {
+        params: { language: 'en-US' },
+      }),
+    ]);
 
     return {
-      ...movieData.data,
-      cast: castData.data.cast,
-      similarMovies: similarMovies.data.results.filter(sim => isAllowedMovie(sim.title, allowedNames)),
+      ...mainData.data,
+      cast: castResponse.data.cast,
+      similarMovies: similarResponse.data.results.filter(sim =>
+        isAllowedMovie(sim.title || sim.original_title, allowedNames)
+      ),
     };
   } catch (error) {
-    console.log('Error while fetching movie info:', error);
+    console.log('Error while fetching movie/TV info:', error);
     return null;
   }
 };

@@ -22,6 +22,23 @@ export interface IMovie {
     vote_count: number;
 }
 
+export interface ITvSeries {
+    adult: boolean;
+    backdrop_path: string;
+    genre_ids: number[];
+    id: number;
+    original_language: string;
+    original_name: string;
+    overview: string;
+    popularity: number;
+    poster_path: string;
+    first_air_date: string;
+    name: string;
+    origin_country: string[];
+    vote_average: number;
+    vote_count: number;
+}
+
 export interface IMovieInfo {
     adult: boolean;
     backdrop_path: string;
@@ -94,3 +111,5 @@ export interface ICast {
     credit_id: string;
     order: number;
 }
+
+export type IMediaItem = IMovie | ITvSeries;
