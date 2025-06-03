@@ -49,7 +49,7 @@ const Page = async ({ params }: Props) => {
 
   return (
     <div className="grid gap-6">
-      <MovieInfo info={movieInfo} />
+      <MovieInfo info={movieInfo} media_type={media_type} />
 
       <Card className="w-full overflow-hidden">
         <CardHeader>

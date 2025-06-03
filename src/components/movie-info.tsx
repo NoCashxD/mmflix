@@ -10,6 +10,7 @@ import { log } from 'console';
 
 type Props = {
     info: IMovieInfo;
+    media_type : string;
 };
 
 type DownloadItem = {
@@ -17,13 +18,20 @@ type DownloadItem = {
     size: number;
     link: string;
 };
+type Detail = {
+  label: string;
+  value: string;
+};
 
-const MovieInfo = ({ info }: Props) => {
+
+
+const MovieInfo = ({ info ,media_type }: Props) => {
     const { isFavorited, toggleFavorite } = useFavorites();
     const [downloadLinks, setDownloadLinks] = useState<DownloadItem[]>([]);
     const title = info?.title || info?.name;
     const releaseDate = info?.release_date || info?.first_air_date;
     const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : 'N/A';
+    const [otherDetails, setOtherDetails] = useState<Detail[]>([]);
   useEffect(() => {
   const fetchDownloadLinks = async () => {
     console.log('Fetching movie:', info.title);
@@ -58,13 +66,20 @@ const MovieInfo = ({ info }: Props) => {
   }
 }, [info.title]);
 
-
-
-    const otherDetails = [
-        info?.release_date && { label: 'Runtime', value: `${info?.runtime} min` },
-       info?.release_date && {  label: 'Release Date', value: `${info?.release_date}` },
-        { label: 'Original Language', value: `${ISO6391.getName(info?.original_language)}` },
-    ];
+useEffect(() => {
+    if (media_type === "tv") {
+      setOtherDetails([
+        { label: 'Release Date', value: `${new Date(info?.first_air_date).getFullYear() || 'N/A'}` },
+        { label: 'Original Language', value: ISO6391.getName(info?.original_language) },
+      ]);
+    } else {
+      setOtherDetails([
+        { label: 'Runtime', value: `${info?.runtime} min` },
+        { label: 'Release Date', value: `${new Date(info?.release_date).getFullYear() || 'N/A'}` },
+        { label: 'Original Language', value: ISO6391.getName(info?.original_language) },
+      ]);
+    }
+  }, [media_type, info]);
 
     return (
         <div className="rounded-2xl border bg-card relative overflow-hidden">
