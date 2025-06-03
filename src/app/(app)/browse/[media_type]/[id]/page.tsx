@@ -9,15 +9,12 @@ import { notFound } from 'next/navigation';
 import React from 'react';
 
 interface Props {
-  params: {
-    media_type: string;
-    id: string;
-  };
+    params: Promise<{ media_type: string ,id: string }>;
 }
 
-
 export async function generateMetadata({ params }: Props, parent: ResolvingMetadata): Promise<Metadata> {
-  const { media_type, id } = params;
+  const id = (await params).id;
+  const media_type = (await params).media_type;
   const response = await getMovieInfo(id, media_type); // Pass media_type
 
   if (!response) return { title: 'Media not found' };
@@ -42,7 +39,8 @@ export async function generateMetadata({ params }: Props, parent: ResolvingMetad
 
 
 const Page = async ({ params }: Props) => {
-  const { media_type, id } = params;
+  const id = (await params).id;
+  const media_type = (await params).media_type;
 
   const response = await getMovieInfo(id, media_type); // media_type: 'movie' | 'tv'
 
