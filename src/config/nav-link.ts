@@ -7,12 +7,12 @@ const NavLinks = [
         icons: Home,
     },
     {
-        name: 'Search',
+        name: 'Movies',
         href: '/search',
-        icons: Search,
+        icons: Movies,
     },
     {
-        name: 'Browse',
+        name: 'Tv Shows',
         href: '/browse',
         icons: TvIcon,
     },
