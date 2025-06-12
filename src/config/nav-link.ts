@@ -1,4 +1,4 @@
-import { Home, Library, Search, ListMusicIcon, TvIcon, Heart } from 'lucide-react';
+import { Home, Clapperboard, Library, Search, ListMusicIcon, TvIcon, Heart } from 'lucide-react';
 
 const NavLinks = [
     {
@@ -9,7 +9,7 @@ const NavLinks = [
     {
         name: 'Movies',
         href: '/search',
-        icons: Movies,
+        icons: Clapperboard,
     },
     {
         name: 'Tv Shows',
