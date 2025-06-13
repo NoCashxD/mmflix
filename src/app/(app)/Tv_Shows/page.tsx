@@ -21,7 +21,7 @@ const page = async ({ searchParams }: Props) => {
 
     return (
         <div className="px-2">
-            <h2 className="text-primary font-semibold text-2xl text-center mb-10 mt-6">Browse</h2>
+            <h2 className="text-primary font-semibold text-2xl text-center mb-10 mt-6">Tv_Shows</h2>
 
             <div className="grid grid-cols-2 md:flex flex-wrap gap-4 md:gap-6 items-center justify-evenly md:justify-center ">
                 {movies.map(movie => (
@@ -30,7 +30,7 @@ const page = async ({ searchParams }: Props) => {
             </div>
 
             <div className="mt-14">
-                <PaginationComponent path="/browse" current={currentPage} total={TOTAL_PAGES} />
+                <PaginationComponent path="/Tv_Shows" current={currentPage} total={TOTAL_PAGES} />
             </div>
         </div>
     );

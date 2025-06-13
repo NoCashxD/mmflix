@@ -22,7 +22,7 @@ const MovieCard = ({ movie, className }: Props) => {
     const releaseDate = movie.release_date || movie.first_air_date;
     const releaseYear = releaseDate ? new Date(releaseDate).getFullYear() : 'N/A';
     return (
-        <Link href={`/browse/${movie.media_type}/${movie.id}`} className="inline-block whitespace-normal" prefetch={false}>
+        <Link href={`/Tv_Shows/${movie.media_type}/${movie.id}`} className="inline-block whitespace-normal" prefetch={false}>
             <div
                 className={cn(
                     'rounded-lg overflow-hidden border relative h-44 md:h-52 2xl:h-56 aspect-[3/4] md:aspect-[3/4] shadow-md hover:border-primary transition-all duration-300 group',

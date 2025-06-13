@@ -66,7 +66,7 @@ const SearchResults = () => {
   return (
     <Link
       prefetch={false}
-      href={`/browse/${movie.media_type}/${movie.id}`}
+      href={`/Tv_Shows/${movie.media_type}/${movie.id}`}
       key={`${movie.media_type || 'movie'}-${movie.id}`}
       className="py-1.5 px-2 rounded-md gap-3 flex hover:bg-muted cursor-pointer group transition-all"
     >
