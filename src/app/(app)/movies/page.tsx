@@ -30,7 +30,7 @@ const page = async ({ searchParams }: Props) => {
             </div>
 
             <div className="mt-14">
-                <PaginationComponent path="/movie" current={currentPage} total={TOTAL_PAGES} />
+                <PaginationComponent path="/movies" current={currentPage} total={TOTAL_PAGES} />
             </div>
         </div>
     );
