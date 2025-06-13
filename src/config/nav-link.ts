@@ -9,7 +9,7 @@ const NavLinks = [
     {
         name: 'search',
         href: '/search',
-        icons: Clapperboard,
+        icons: Search,
     },
     {
         name: 'Movies',

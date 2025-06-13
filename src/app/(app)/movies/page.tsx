@@ -17,11 +17,11 @@ export const metadata: Metadata = {
 
 const page = async ({ searchParams }: Props) => {
     const currentPage = parseInt((await searchParams).page) || 1;
-    const movies = await discoverMovies({ page: currentPage });
+    const movies = await discoverMovies({ page: currentPage, media_type: 'movie' });
 
     return (
         <div className="px-2">
-            <h2 className="text-primary font-semibold text-2xl text-center mb-10 mt-6">Tv_Shows</h2>
+            <h2 className="text-primary font-semibold text-2xl text-center mb-10 mt-6">Movies</h2>
 
             <div className="grid grid-cols-2 md:flex flex-wrap gap-4 md:gap-6 items-center justify-evenly md:justify-center ">
                 {movies.map(movie => (

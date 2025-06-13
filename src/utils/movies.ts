@@ -10,6 +10,7 @@ interface DiscoverMoviesProps {
   with_cast?: string;
   with_people?: string;
   with_original_language?: string;
+  media_type?: 'movie' | 'tv';
 }
 
 const getAllowedMovieNames = async (): Promise<string[]> => {
@@ -37,21 +38,8 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
   try {
     const allowedNames = await getAllowedMovieNames();
 
-    const [movieResponse, tvResponse] = await Promise.all([
-      tmdbClient.get<IApiResponse<IMovie[]>>('/discover/movie', {
-        params: {
-          page: props.page || 1,
-          include_adult: false,
-          include_video: false,
-          ...(props.sort_by && { sort_by: props.sort_by }),
-          ...(props.with_original_language && { with_original_language: props.with_original_language }),
-          ...(props.primary_release_year && { primary_release_year: props.primary_release_year }),
-          ...(props.with_genres && { with_genres: props.with_genres }),
-          ...(props.with_cast && { with_cast: props.with_cast }),
-          ...(props.with_people && { with_people: props.with_people }),
-        },
-      }),
-      tmdbClient.get<IApiResponse<IMovie[]>>('/discover/tv', {
+    if (props.media_type === 'tv') {
+      const tvResponse = await tmdbClient.get<IApiResponse<IMovie[]>>('/discover/tv', {
         params: {
           page: props.page || 1,
           include_adult: false,
@@ -62,29 +50,44 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
           ...(props.with_cast && { with_cast: props.with_cast }),
           ...(props.with_people && { with_people: props.with_people }),
         },
-      }),
-    ]);
+      });
+
+      const tvResults = tvResponse.data.results.map(item => ({
+        ...item,
+        media_type: 'tv',
+      }));
+
+      return tvResults;
+    }
+
+    // Default: fetch movies
+    const movieResponse = await tmdbClient.get<IApiResponse<IMovie[]>>('/discover/movie', {
+      params: {
+        page: props.page || 1,
+        include_adult: false,
+        include_video: false,
+        ...(props.sort_by && { sort_by: props.sort_by }),
+        ...(props.with_original_language && { with_original_language: props.with_original_language }),
+        ...(props.primary_release_year && { primary_release_year: props.primary_release_year }),
+        ...(props.with_genres && { with_genres: props.with_genres }),
+        ...(props.with_cast && { with_cast: props.with_cast }),
+        ...(props.with_people && { with_people: props.with_people }),
+      },
+    });
 
     const movieResults = movieResponse.data.results.map(item => ({
       ...item,
-      media_type: 'movie',    // added here
+      media_type: 'movie',
     }));
 
-    const tvResults = tvResponse.data.results.map(item => ({
-      ...item,
-      media_type: 'tv',       // added here
-    }));
+    return movieResults;
 
-    const allResults = [...movieResults, ...tvResults];
-    return allResults.filter(item => {
-      const title = item.original_title || item.name;
-      return isAllowedMovie(title, allowedNames);
-    });
   } catch (error) {
-    console.log('Error while fetching combined movie/TV results:', error);
+    console.log('Error while fetching movie/TV results:', error);
     return [];
   }
 };
+
 
 
 export const getTrendingMovies = async () => {

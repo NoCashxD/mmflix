@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 const page = async ({ searchParams }: Props) => {
     const currentPage = parseInt((await searchParams).page) || 1;
-    const movies = await discoverMovies({ page: currentPage });
+    const movies = await discoverMovies({ page: currentPage, media_type: 'tv' });
 
     return (
         <div className="px-2">
