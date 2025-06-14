@@ -34,7 +34,8 @@ const isAllowedMovie = (title: string, allowedNames: string[]): boolean => {
   });
 };
 
-const getTitle = (item: IMovie) =>
+// FIXED: Accept both IMovie and IMovieInfo
+const getTitle = (item: IMovie | IMovieInfo) =>
   item.title || item.original_title || item.name || item.original_name || '';
 
 export const discoverMovies = async (props: DiscoverMoviesProps) => {
@@ -174,7 +175,7 @@ export const getMovieInfo = async (id: string, media_type: string) => {
       params: { language: 'en-US' },
     });
 
-    const title = getTitle(mainData.data);
+    const title = getTitle(mainData.data); // ✅ FIXED: IMovieInfo now accepted
 
     // Uncomment if you want to restrict viewing detail pages
     // if (!isAllowedMovie(title, allowedNames)) return null;
