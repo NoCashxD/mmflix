@@ -18,24 +18,28 @@ const getAllowedMovieNames = async (): Promise<string[]> => {
     const baseUrl = "https://mmflix.vercel.app";
     const response = await fetch(`${baseUrl}/api/allowed-movies`);
     const data = await response.json();
+    console.log('✅ Allowed Movie Names:', data);
     return data.map((name: string) => name.toLowerCase());
   } catch (error) {
-    console.error('Failed to fetch allowed movie names:', error);
+    console.error('❌ Failed to fetch allowed movie names:', error);
     return [];
   }
 };
 
 const isAllowedMovie = (title: string, allowedNames: string[]): boolean => {
   if (!title) return false;
-  const lowerTitle = title.toLowerCase();
-  return allowedNames.some(name => {
-    const lowerName = name.toLowerCase();
+  const normalize = (str: string) => str.toLowerCase().replace(/[^\w\s]/gi, '');
+  const lowerTitle = normalize(title);
+  const result = allowedNames.some(name => {
+    const lowerName = normalize(name);
     return lowerTitle.includes(lowerName) || lowerName.includes(lowerTitle);
   });
+
+  console.log(`🔍 Checking "${title}" -> Allowed:`, result);
+  return result;
 };
 
-// FIXED: Accept both IMovie and IMovieInfo
-const getTitle = (item: IMovie | IMovieInfo) =>
+const getTitle = (item: IMovie) =>
   item.title || item.original_title || item.name || item.original_name || '';
 
 export const discoverMovies = async (props: DiscoverMoviesProps) => {
@@ -61,7 +65,9 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
         media_type: 'tv',
       }));
 
-      return tvResults.filter(item => isAllowedMovie(getTitle(item), allowedNames));
+      console.log('📺 TV Results Count:', tvResults.length);
+
+      return tvResults; // TEMP: disable filter for debugging
     }
 
     const movieResponse = await tmdbClient.get<IApiResponse<IMovie[]>>('/discover/movie', {
@@ -83,9 +89,11 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
       media_type: 'movie',
     }));
 
-    return movieResults.filter(item => isAllowedMovie(getTitle(item), allowedNames));
+    console.log('🎬 Movie Results Count:', movieResults.length);
+
+    return movieResults; // TEMP: disable filter for debugging
   } catch (error) {
-    console.log('Error while fetching movie/TV results:', error);
+    console.log('❌ Error while fetching movie/TV results:', error);
     return [];
   }
 };
@@ -111,9 +119,11 @@ export const getTrendingMovies = async () => {
 
     const allResults = [...movieResults, ...tvResults];
 
-    return allResults.filter(item => isAllowedMovie(getTitle(item), allowedNames));
+    console.log('🔥 Trending Movies + TV Count:', allResults.length);
+
+    return allResults; // TEMP: disable filter for debugging
   } catch (error) {
-    console.log('Error while fetching trending movies/TV:', error);
+    console.log('❌ Error while fetching trending movies/TV:', error);
     return [];
   }
 };
@@ -160,9 +170,11 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
 
     const allResults = [...movieResults, ...tvResults];
 
-    return allResults.filter(item => isAllowedMovie(getTitle(item), allowedNames));
+    console.log('🔎 Search Results Count:', allResults.length);
+
+    return allResults; // TEMP: disable filter for debugging
   } catch (error) {
-    console.log('Error while fetching search results:', error);
+    console.log('❌ Error while fetching search results:', error);
     return [];
   }
 };
@@ -175,9 +187,10 @@ export const getMovieInfo = async (id: string, media_type: string) => {
       params: { language: 'en-US' },
     });
 
-    const title = getTitle(mainData.data); // ✅ FIXED: IMovieInfo now accepted
+    const title = getTitle(mainData.data);
+    console.log(`🎥 Movie Info Title: "${title}"`);
 
-    // Uncomment if you want to restrict viewing detail pages
+    // Uncomment below to enable restriction
     // if (!isAllowedMovie(title, allowedNames)) return null;
 
     const [similarResponse, castResponse] = await Promise.all([
@@ -198,6 +211,7 @@ export const getMovieInfo = async (id: string, media_type: string) => {
       ),
     };
   } catch (err) {
+    console.log('❌ Failed to fetch movie info:', err);
     return null;
   }
 };
