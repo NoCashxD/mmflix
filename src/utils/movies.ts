@@ -57,7 +57,11 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
         media_type: 'tv',
       }));
 
-      return tvResults;
+      //return tvResults;
+      return tvResults.filter(item => {
+      const title = item.original_title || item.name;
+      return isAllowedMovie(title, allowedNames);
+    });
     }
 
     // Default: fetch movies
@@ -80,7 +84,11 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
       media_type: 'movie',
     }));
 
-    return movieResults;
+    //return movieResults;
+    return movieResults.filter(item => {
+      const title = item.original_title || item.name;
+      return isAllowedMovie(title, allowedNames);
+    });
 
   } catch (error) {
     console.log('Error while fetching movie/TV results:', error);
