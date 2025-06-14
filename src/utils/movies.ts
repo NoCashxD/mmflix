@@ -34,6 +34,9 @@ const isAllowedMovie = (title: string, allowedNames: string[]): boolean => {
   });
 };
 
+const getTitle = (item: IMovie) =>
+  item.title || item.original_title || item.name || item.original_name || '';
+
 export const discoverMovies = async (props: DiscoverMoviesProps) => {
   try {
     const allowedNames = await getAllowedMovieNames();
@@ -57,14 +60,9 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
         media_type: 'tv',
       }));
 
-      //return tvResults;
-      return tvResults.filter(item => {
-      const title = item.original_title || item.name;
-      return isAllowedMovie(title, allowedNames);
-    });
+      return tvResults.filter(item => isAllowedMovie(getTitle(item), allowedNames));
     }
 
-    // Default: fetch movies
     const movieResponse = await tmdbClient.get<IApiResponse<IMovie[]>>('/discover/movie', {
       params: {
         page: props.page || 1,
@@ -84,19 +82,12 @@ export const discoverMovies = async (props: DiscoverMoviesProps) => {
       media_type: 'movie',
     }));
 
-    //return movieResults;
-    return movieResults.filter(item => {
-      const title = item.original_title || item.name;
-      return isAllowedMovie(title, allowedNames);
-    });
-
+    return movieResults.filter(item => isAllowedMovie(getTitle(item), allowedNames));
   } catch (error) {
     console.log('Error while fetching movie/TV results:', error);
     return [];
   }
 };
-
-
 
 export const getTrendingMovies = async () => {
   try {
@@ -109,19 +100,17 @@ export const getTrendingMovies = async () => {
 
     const movieResults = movieResponse.data.results.map(item => ({
       ...item,
-      media_type: 'movie',  // added here
+      media_type: 'movie',
     }));
 
     const tvResults = tvResponse.data.results.map(item => ({
       ...item,
-      media_type: 'tv',     // added here
+      media_type: 'tv',
     }));
 
     const allResults = [...movieResults, ...tvResults];
-    return allResults.filter(item => {
-      const title = item.original_title || item.name;
-      return isAllowedMovie(title, allowedNames);
-    });
+
+    return allResults.filter(item => isAllowedMovie(getTitle(item), allowedNames));
   } catch (error) {
     console.log('Error while fetching trending movies/TV:', error);
     return [];
@@ -170,22 +159,12 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
 
     const allResults = [...movieResults, ...tvResults];
 
-    return allResults.filter(item => {
-      const title =
-        item.title ||
-        item.original_title ||
-        item.name ||
-        item.original_name ||
-        '';
-
-      return isAllowedMovie(title, allowedNames);
-    });
+    return allResults.filter(item => isAllowedMovie(getTitle(item), allowedNames));
   } catch (error) {
     console.log('Error while fetching search results:', error);
     return [];
   }
 };
-
 
 export const getMovieInfo = async (id: string, media_type: string) => {
   const allowedNames = await getAllowedMovieNames();
@@ -195,13 +174,9 @@ export const getMovieInfo = async (id: string, media_type: string) => {
       params: { language: 'en-US' },
     });
 
-    const title =
-      mainData.data.title ||
-      mainData.data.original_title ||
-      mainData.data.name ||
-      mainData.data.original_name;
+    const title = getTitle(mainData.data);
 
-    // Uncomment this if you want to restrict based on allowed titles
+    // Uncomment if you want to restrict viewing detail pages
     // if (!isAllowedMovie(title, allowedNames)) return null;
 
     const [similarResponse, castResponse] = await Promise.all([
@@ -218,10 +193,7 @@ export const getMovieInfo = async (id: string, media_type: string) => {
       media_type,
       cast: castResponse.data.cast,
       similarMovies: similarResponse.data.results.filter(sim =>
-        isAllowedMovie(
-          sim.title || sim.original_title || sim.name || sim.original_name,
-          allowedNames
-        )
+        isAllowedMovie(getTitle(sim), allowedNames)
       ),
     };
   } catch (err) {
