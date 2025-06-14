@@ -160,17 +160,24 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
 
     const movieResults = movieResponse.data.results.map(item => ({
       ...item,
-      media_type: 'movie',  // added here
+      media_type: 'movie',
     }));
 
     const tvResults = tvResponse.data.results.map(item => ({
       ...item,
-      media_type: 'tv',     // added here
+      media_type: 'tv',
     }));
 
     const allResults = [...movieResults, ...tvResults];
+
     return allResults.filter(item => {
-      const title = item.original_title || item.name;
+      const title =
+        item.title ||
+        item.original_title ||
+        item.name ||
+        item.original_name ||
+        '';
+
       return isAllowedMovie(title, allowedNames);
     });
   } catch (error) {
@@ -178,6 +185,7 @@ export const searchMovies = async ({ query, page = 1, signal }: SearchMoviesProp
     return [];
   }
 };
+
 
 export const getMovieInfo = async (id: string, media_type: string) => {
   const allowedNames = await getAllowedMovieNames();
